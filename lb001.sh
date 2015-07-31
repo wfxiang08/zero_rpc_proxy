@@ -1,0 +1,1 @@
+./rpc_lb --product="online_service" --service="account"  --zk="127.0.0.1:2181" --faddr='tcp://127.0.0.1:5555' --baddr='tcp://127.0.0.1:5556'

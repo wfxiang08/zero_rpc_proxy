@@ -1,0 +1,73 @@
+{
+	"ImportPath": "",
+	"GoVersion": "go1.4.2",
+	"Packages": [
+		"github.com/wfxiang08/rpc_proxy/demo/rpc_lb.go"
+	],
+	"Deps": [
+		{
+			"ImportPath": "git.apache.org/thrift.git/lib/go/thrift",
+			"Rev": "2a15b993724dfef00bdbe28c2a7e1452dec4461a"
+		},
+		{
+			"ImportPath": "github.com/c4pt0r/cfg",
+			"Rev": "429e6985f0b07bceaa33b57ee612fbca4797a9a6"
+		},
+		{
+			"ImportPath": "github.com/coreos/etcd/error",
+			"Comment": "v2.1.1-37-gb407f72",
+			"Rev": "b407f72766e0c29438d1746d73d60d06e3f001e0"
+		},
+		{
+			"ImportPath": "github.com/coreos/go-etcd/etcd",
+			"Comment": "v2.0.0-22-g9847b93",
+			"Rev": "9847b93751a5fbaf227b893d172cee0104ac6427"
+		},
+		{
+			"ImportPath": "github.com/docopt/docopt-go",
+			"Comment": "0.6.1-5-g854c423",
+			"Rev": "854c423c810880e30b9fecdabb12d54f4a92f9bb"
+		},
+		{
+			"ImportPath": "github.com/fatih/color",
+			"Comment": "v0.1",
+			"Rev": "1b35f289c47d5c73c398cea8e006b7bcb6234a96"
+		},
+		{
+			"ImportPath": "github.com/ngaut/log",
+			"Rev": "a370e11a897352d792b9a6cba4db829368271c41"
+		},
+		{
+			"ImportPath": "github.com/ngaut/logging",
+			"Rev": "f98f5f4cd523647678af6f1726c5b5a14c9193d0"
+		},
+		{
+			"ImportPath": "github.com/ngaut/pools",
+			"Rev": "6352e005618615ffaf1cb1c6622b8e91435751fe"
+		},
+		{
+			"ImportPath": "github.com/ngaut/sync2",
+			"Rev": "7a24ed77b2efb460c1468b7dc917821c66e80e55"
+		},
+		{
+			"ImportPath": "github.com/pebbe/zmq4",
+			"Rev": "4b5b0725b5d36cef61e2744bd7c93067180e3edf"
+		},
+		{
+			"ImportPath": "github.com/shiena/ansicolor",
+			"Rev": "a5e2b567a4dd6cc74545b8a4f27c9d63b9e7735b"
+		},
+		{
+			"ImportPath": "github.com/ugorji/go/codec",
+			"Rev": "03e33114d4d60a1f37150325e15f51b0fa6fc4f6"
+		},
+		{
+			"ImportPath": "github.com/wandoulabs/go-zookeeper/zk",
+			"Rev": "b1b28a63b55c6cbf89a73fde62b3e92675c90d4e"
+		},
+		{
+			"ImportPath": "github.com/wandoulabs/zkhelper",
+			"Rev": "324e3770c089e7a489248872efb3e5eb16c35e7b"
+		}
+	]
+}
