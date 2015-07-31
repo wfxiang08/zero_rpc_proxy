@@ -11,7 +11,7 @@ ZeroThrift RPC分为4层，从前端往后端依次标记为L1, L2, L3, L4
 
 ```python
 # Transport层是所有的RPC服务都共用的(除非在同一个请求内部实现了并发)
-transport = get_transport(settings.RPC_LOCAL_PROXY)
+_ = get_transport(settings.RPC_LOCAL_PROXY)
 
 # 获取Client
 from cy_typo.services.TypoService import Client
@@ -22,6 +22,7 @@ _typo_client = Client(protocol)
 rpc_result = _typo_client.correct_typo(ensure_utf8(content))
 content = rpc_result.fixed
 ```
+* 相应的Python RPC Client&Server的实现: https://github.com/wfxiang08/zerothrift
 
 ### L2层(Proxy层)
 * 由于Python的进程功能太弱，不变在内部实现连接池等；如果让它们直接直连后端的Server, 则整个逻辑(connections)会非常乱，端口管理也会非常麻烦
@@ -108,7 +109,6 @@ service = config["service"]
 worker_pool_size = int(config["worker_pool_size"])
 
 processor = Processor(TypoProcessor())
-# 如何判断当前的Queue是否已经挂了
 s = Server(processor, pool_size=worker_pool_size, mode_ppworker = True, service=service)
 s.connect(endpoint)
 s.run()
