@@ -181,6 +181,8 @@ func mainBody(zkAddr string, productName string, serviceName string, frontendAdd
 	frontend.Bind(frontendAddr) //  For clients "tcp://*:5555"
 	backend.Bind(backendAddr)   //  For workers "tcp://*:5556"
 
+	log.Printf("FrontAddr: %s, BackendAddr: %s\n", frontendAddr, backendAddr)
+
 	// 后端的workers queue
 	workersQueue := queue.NewPPQueue()
 

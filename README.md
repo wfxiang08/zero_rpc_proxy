@@ -116,9 +116,10 @@ s.run()
 
 ## 运维部署
 * 编译:
-	* go build git.chunyu.me/infra/rpc_proxy/demo/rpc_lb.go
-	* go build git.chunyu.me/infra/rpc_proxy/demo/rpc_proxy.go
-	* scp rpc_ summer2:/usr/local/bin/
+	* go build github.com/wfxiang08/rpc_proxy/demo/rpc_lb.go
+	* go build github.com/wfxiang08/rpc_proxy/demo/rpc_proxy.go
+	* scp rpc_* node:/usr/local/bin/
+	* sudo cp rpc_* /usr/local/bin/
 
 * zeromq的安装部署
-	* https://app.yinxiang.com/shard/s54/nl/5425409/0ef1cd1c-9303-4b9c-a8ad-abd62ce06aef/
+	* https://github.com/wfxiang08/rpc_proxy/blob/master/INSTALL.md
