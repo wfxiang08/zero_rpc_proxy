@@ -6,6 +6,7 @@ package main
 import (
 	"fmt"
 	"github.com/docopt/docopt-go"
+	color "github.com/fatih/color"
 	zmq "github.com/pebbe/zmq4"
 	config "github.com/wfxiang08/rpc_proxy/config"
 	proxy "github.com/wfxiang08/rpc_proxy/proxy"
@@ -32,6 +33,8 @@ const (
 
 	VERSION = "\x01" //  当前协议的版本
 )
+
+var magenta = color.New(color.FgMagenta).SprintFunc()
 
 var usage = `usage: rpc_lb [-c <config_file>] [--product=<product-name>]  [--zk=<zookeeper-address>] [--service=<service-name>] [--faddr=<frontend-address>] [--baddr=<backend-address>] [-L <log_file>] [--log-level=<loglevel>] [--log-filesize=<filesize>] 
 
@@ -161,6 +164,7 @@ func GetServiceIdentity(frontendAddr string) string {
 	fid = strings.Replace(fid, "//", "", -1)
 	return fid
 }
+
 func mainBody(zkAddr string, productName string, serviceName string, frontendAddr string, backendAddr string) {
 	// 1. 创建到zk的连接
 	var topo *zk.Topology
@@ -181,7 +185,7 @@ func mainBody(zkAddr string, productName string, serviceName string, frontendAdd
 	frontend.Bind(frontendAddr) //  For clients "tcp://*:5555"
 	backend.Bind(backendAddr)   //  For workers "tcp://*:5556"
 
-	log.Printf("FrontAddr: %s, BackendAddr: %s\n", frontendAddr, backendAddr)
+	log.Printf("FrontAddr: %s, BackendAddr: %s\n", magenta(frontendAddr), magenta(backendAddr))
 
 	// 后端的workers queue
 	workersQueue := queue.NewPPQueue()

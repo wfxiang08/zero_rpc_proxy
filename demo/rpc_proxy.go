@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/docopt/docopt-go"
+	color "github.com/fatih/color"
 	zmq "github.com/pebbe/zmq4"
 	config "github.com/wfxiang08/rpc_proxy/config"
 	proxy "github.com/wfxiang08/rpc_proxy/proxy"
@@ -19,6 +20,8 @@ const (
 	PROXY_FRONT_END    = "rpc_front"
 	HEARTBEAT_INTERVAL = 1000 * time.Millisecond //  msecs
 )
+
+var magenta = color.New(color.FgMagenta).SprintFunc()
 
 var usage = `usage: rpc_proxy [-c <config_file>] [--product=<product-name>]   [--zk=<zookeeper-address>] [--faddr=<frontend-address>] [-L <log_file>] [--log-level=<loglevel>] [--log-filesize=<filesize>] 
 
@@ -129,7 +132,7 @@ func mainBody(productName string, frontAddr string, zkAdresses string) {
 	defer frontend.Close()
 
 	// ROUTER/ROUTER绑定到指定的端口
-	log.Println("---->Bind: ", frontAddr)
+	log.Println("---->Bind: ", magenta(frontAddr))
 	frontend.Bind(frontAddr) //  For clients
 
 	// 开始监听前端服务

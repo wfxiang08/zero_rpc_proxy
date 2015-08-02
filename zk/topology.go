@@ -132,9 +132,14 @@ func (top *Topology) AddServiceEndPoint(service string, endpoint string, endpoin
 
 	// 当前的Session挂了，服务就下线
 	// topo.FlagEphemeral
-	path, err = CreateOrUpdate(top.zkConn, path, string(data), topo.FlagEphemeral, zkhelper.DefaultFileACLs(), true)
 
-	log.Println(green("SetRpcProxyData"), "Path: ", path, ", Error: ", err, ", Data: ", data)
+	// 参考： https://www.box.com/blog/a-gotcha-when-using-zookeeper-ephemeral-nodes/
+	// 如果之前的Session信息还存在，则先删除；然后再添加
+	top.zkConn.Delete(path, -1)
+	var pathCreated string
+	pathCreated, err = top.zkConn.Create(path, []byte(data), int32(topo.FlagEphemeral), zkhelper.DefaultFileACLs())
+
+	log.Println(green("SetRpcProxyData"), "Path: ", pathCreated, ", Error: ", err)
 	return err
 }
 
