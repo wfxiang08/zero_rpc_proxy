@@ -18,8 +18,8 @@ from cy_typo.services.TypoService import Client
 protocol = get_protocol("typo")
 _typo_client = Client(protocol)
 
-# 函数调用(需要注意: 所有的字符串都必须是utf8格式的)
-rpc_result = _typo_client.correct_typo(ensure_utf8(content))
+# 函数调用(需要注意: 所有的字符串都必须是utf8格式的，RPC在序列化string时会自动转换成为utf8)
+rpc_result = _typo_client.correct_typo(content)
 content = rpc_result.fixed
 ```
 * 相应的Python RPC Client&Server的实现: https://github.com/wfxiang08/zerothrift
