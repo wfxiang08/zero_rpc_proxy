@@ -88,13 +88,13 @@ func (s *BackService) HandleRequest(client_id string, msgs []string) (total int,
 		// 没有后端服务
 
 		if config.VERBOSE {
-			log.Println(utils.Red("No BackSocket Found"))
+			log.Println(utils.Red("No BackSocket Found for service:"), s.ServiceName)
 		}
 		errMsg := GetWorkerNotFoundData(s.ServiceName, 0)
 		return 0, nil, &errMsg
 	} else {
 		if config.VERBOSE {
-			log.Println("SendMessage With: ", backSocket.Addr)
+			log.Println("SendMessage With: ", backSocket.Addr, "For Service: ", s.ServiceName)
 		}
 		total, err = backSocket.SendMessage("", client_id, "", msgs)
 		return total, err, nil

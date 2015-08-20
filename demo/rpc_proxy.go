@@ -194,7 +194,7 @@ func mainBody(productName string, frontAddr string, zkAdresses string) {
 					total, err, errMsg := backService.HandleRequest(client_id, msgs)
 					if errMsg != nil {
 						if config.VERBOSE {
-							log.Println("backService Error: ", *errMsg)
+							log.Println("backService Error for service: ", service)
 						}
 						if len(msgs) > 1 {
 							frontend.SendMessage(client_id, "", msgs[0:len(msgs)-1], *errMsg)
