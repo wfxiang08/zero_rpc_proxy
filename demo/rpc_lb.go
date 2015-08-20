@@ -236,7 +236,7 @@ func mainBody(zkAddr string, productName string, serviceName string, frontendAdd
 			isAliveLock.RLock()
 			isAlive1 := isAlive
 			isAliveLock.RUnlock()
-			if isAlive1 {
+			if !isAlive1 {
 				break
 			}
 
