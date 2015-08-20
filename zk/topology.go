@@ -204,8 +204,13 @@ func (top *Topology) GetRpcProxyData() (proxyInfo map[string]interface{}, e erro
 //
 func (top *Topology) doWatch(evtch <-chan topo.Event, evtbus chan interface{}) {
 	e := <-evtch
+
+	// http://wiki.apache.org/hadoop/ZooKeeper/FAQ
+	// 如何处理? 照理说不会发生的
 	if e.State == topo.StateExpired || e.Type == topo.EventNotWatching {
-		log.Panicf("session expired: %+v", e)
+		log.Warnf("session expired: %+v", e)
+		evtbus <- e
+		return
 	}
 
 	log.Warnf("topo event %+v", e)

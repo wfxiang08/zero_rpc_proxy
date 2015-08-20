@@ -8,6 +8,7 @@ import (
 	"github.com/docopt/docopt-go"
 	color "github.com/fatih/color"
 	zmq "github.com/pebbe/zmq4"
+	topozk "github.com/wandoulabs/go-zookeeper/zk"
 	config "github.com/wfxiang08/rpc_proxy/config"
 	proxy "github.com/wfxiang08/rpc_proxy/proxy"
 	queue "github.com/wfxiang08/rpc_proxy/queue"
@@ -18,6 +19,7 @@ import (
 	"os"
 	"os/signal"
 	"strings"
+	"sync"
 	"syscall"
 	"time"
 )
@@ -211,6 +213,36 @@ func mainBody(zkAddr string, productName string, serviceName string, frontendAdd
 
 	topo.AddServiceEndPoint(serviceName, lbServiceName, endpointInfo)
 
+	isAlive := true
+	isAliveLock := &sync.RWMutex{}
+
+	go func() {
+		servicePath := topo.ProductServicePath(serviceName)
+		evtbus := make(chan interface{})
+		for true {
+			// 只是为了监控状态
+			_, err := topo.WatchNode(servicePath, evtbus)
+
+			if err == nil {
+				// 等待事件
+				e := (<-evtbus).(topozk.Event)
+				if e.State == topozk.StateExpired || e.Type == topozk.EventNotWatching {
+					topo.AddServiceEndPoint(serviceName, lbServiceName, endpointInfo)
+				}
+			} else {
+				time.Sleep(time.Second)
+			}
+
+			isAliveLock.RLock()
+			isAlive1 := isAlive
+			isAliveLock.RUnlock()
+			if isAlive1 {
+				break
+			}
+
+		}
+	}()
+
 	ch := make(chan os.Signal, 1)
 
 	signal.Notify(ch, syscall.SIGTERM, syscall.SIGINT, syscall.SIGKILL)
@@ -221,7 +253,7 @@ func mainBody(zkAddr string, productName string, serviceName string, frontendAdd
 
 	// 自动退出条件:
 	//
-	var isAlive bool = true
+
 	var suideTime time.Time
 
 	for {
@@ -338,7 +370,11 @@ func mainBody(zkAddr string, productName string, serviceName string, frontendAdd
 		}
 
 		// 如果安排的suiside, 则需要处理 suiside的时间
-		if !isAlive {
+		isAliveLock.RLock()
+		isAlive1 := isAlive
+		isAliveLock.RUnlock()
+
+		if !isAlive1 {
 			if hasValidMsg {
 				suideTime = time.Now().Add(time.Second * 3)
 			} else {
@@ -364,12 +400,16 @@ func mainBody(zkAddr string, productName string, serviceName string, frontendAdd
 
 			workersQueue.PurgeExpired()
 		case sig := <-ch:
-			if isAlive {
+			isAliveLock.Lock()
+			isAlive1 := isAlive
+			isAlive = false
+			isAliveLock.Unlock()
+
+			if isAlive1 {
+				// 准备退出(但是需要处理完毕手上的活)
+
 				// 需要退出:
 				topo.DeleteServiceEndPoint(serviceName, lbServiceName)
-
-				// 准备退出(但是需要处理完毕手上的活)
-				isAlive = false
 
 				if sig == syscall.SIGKILL {
 					log.Println(utils.Red("Got Kill Signal, Return Directly"))

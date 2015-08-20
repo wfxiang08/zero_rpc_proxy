@@ -147,7 +147,7 @@ func NewBackServices(poller *zmq.Poller, productName string, topo *zk.Topology) 
 
 			// 等待事件
 			<-evtbus
-			// 读取数据，继续监听
+			// 读取数据，继续监听(连接过期了就过期了，再次Watch即可)
 			services, err = topo.WatchChildren(servicesPath, evtbus)
 		}
 	}()
