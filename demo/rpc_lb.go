@@ -65,7 +65,7 @@ func main() {
 		log.Println(err)
 		os.Exit(1)
 	}
-	var maxFileFrag = 10
+	var maxFileFrag = 2
 	var maxFragSize int64 = bytesize.GB * 1
 	if s, ok := args["--log-filesize"].(string); ok && s != "" {
 		v, err := bytesize.Parse(s)
