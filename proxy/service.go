@@ -47,13 +47,13 @@ func NewBackService(serviceName string, poller *zmq.Poller, topo *zk.Topology) *
 			nowStr := time.Now().Format("@2006-01-02 15:04:05")
 			for _, endpoint := range endpoints {
 				// 这些endpoint变化该如何处理呢?
-				log.Println(utils.Green("---->Find Endpoint: "), endpoint)
+				log.Println(utils.Green("---->Find Endpoint: "), endpoint, "For Service: ", serviceName)
 				endpointInfo, _ := topo.GetServiceEndPoint(serviceName, endpoint)
 
 				addr, ok := endpointInfo["frontend"]
 				if ok {
 					addrStr := addr.(string)
-					log.Println(utils.Green("---->Add endpoint to backend: "), addrStr, nowStr)
+					log.Println(utils.Green("---->Add endpoint to backend: "), addrStr, nowStr, "For Service: ", serviceName)
 					addrSet[addrStr] = true
 				}
 			}
