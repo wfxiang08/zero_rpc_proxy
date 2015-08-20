@@ -227,6 +227,8 @@ func mainBody(zkAddr string, productName string, serviceName string, frontendAdd
 				// 等待事件
 				e := (<-evtbus).(topozk.Event)
 				if e.State == topozk.StateExpired || e.Type == topozk.EventNotWatching {
+					// Session过期了，则需要删除之前的数据，因为这个数据的Owner不是当前的Session
+					topo.DeleteServiceEndPoint(serviceName, lbServiceName)
 					topo.AddServiceEndPoint(serviceName, lbServiceName, endpointInfo)
 				}
 			} else {
