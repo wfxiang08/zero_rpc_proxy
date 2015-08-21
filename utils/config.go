@@ -24,6 +24,7 @@ type Config struct {
 	BackAddr  string
 
 	ProxyAddr string
+	Profile   bool
 }
 
 func LoadConf(configFile string) (*Config, error) {
@@ -75,5 +76,8 @@ func LoadConf(configFile string) (*Config, error) {
 
 	conf.ProxyAddr, _ = c.ReadString("proxy_address", "")
 	conf.ProxyAddr = strings.TrimSpace(conf.ProxyAddr)
+
+	profile, _ := c.ReadInt("profile", 0)
+	conf.Profile = profile == 1
 	return conf, nil
 }

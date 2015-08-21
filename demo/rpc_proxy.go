@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/docopt/docopt-go"
 	color "github.com/fatih/color"
 	zmq "github.com/pebbe/zmq4"
@@ -47,7 +48,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	var maxFileFrag = 10
+	var maxFileFrag = 2
 	var maxFragSize int64 = bytesize.GB * 1
 	if s, ok := args["--log-filesize"].(string); ok && s != "" {
 		v, err := bytesize.Parse(s)
@@ -88,6 +89,7 @@ func main() {
 		frontAddr = conf.ProxyAddr
 		zkAddr = conf.ZkAddr
 		config.VERBOSE = conf.Verbose
+		config.PROFILE = conf.Profile
 	} else {
 		productName = ""
 		zkAddr = ""
@@ -191,6 +193,14 @@ func mainBody(productName string, frontAddr string, zkAdresses string) {
 
 				} else {
 					// <"", client_id, "", msgs>
+					if config.PROFILE {
+						lastMsg := msgs[len(msgs)-1]
+						msgs = msgs[0 : len(msgs)-1]
+						msgs = append(msgs, fmt.Sprintf("%.4f", float64(time.Now().UnixNano())*1e-9), "", lastMsg)
+						if config.VERBOSE {
+							log.Println(printList(msgs))
+						}
+					}
 					total, err, errMsg := backService.HandleRequest(client_id, msgs)
 					if errMsg != nil {
 						if config.VERBOSE {
@@ -224,11 +234,28 @@ func mainBody(productName string, frontAddr string, zkAdresses string) {
 					// 告知后端的服务可能有问题
 
 				} else {
+					if config.PROFILE {
+						lastMsg := msgs[len(msgs)-1]
+						msgs = msgs[0 : len(msgs)-1]
+						msgs = append(msgs, fmt.Sprintf("%.4f", float64(time.Now().UnixNano())*1e-9), "", lastMsg)
+					}
+					if config.VERBOSE {
+						log.Println(printList(msgs))
+					}
 					frontend.SendMessage(msgs)
 				}
 			}
 		}
 	}
+}
+
+func printList(msgs []string) string {
+	results := make([]string, 0, len(msgs))
+	results = append(results, fmt.Sprintf("Msgs Len: %d, ", len(msgs)-1))
+	for i := 0; i < len(msgs)-1; i++ {
+		results = append(results, fmt.Sprintf("[%s]", msgs[i]))
+	}
+	return strings.Join(results, ",")
 }
 
 func init() {
