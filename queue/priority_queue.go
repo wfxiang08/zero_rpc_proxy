@@ -109,13 +109,9 @@ func (pq *PriorityQueue) NextWorker() *Worker {
 
 			return result
 		} else {
-			if result.index != INVALID_INDEX {
-				log.Errorf("Invalid Item index in PriorityQueue#NextWorker")
-			} else {
-				log.Println("Worker Expired")
-				// 只有过期的元素才删除
-				heap.Remove(pq, result.index)
-			}
+			log.Println("Worker Expired")
+			// 只有过期的元素才删除
+			heap.Remove(pq, result.index)
 		}
 	}
 
