@@ -130,6 +130,7 @@ func NewBackServices(poller *zmq.Poller, productName string, topo *zk.Topology) 
 	services, err := topo.WatchChildren(servicesPath, evtbus)
 	if err != nil {
 		log.Println("Error: ", err)
+		// TODO: 这个地方需要优化
 		panic("Reading Service List Failed")
 	}
 

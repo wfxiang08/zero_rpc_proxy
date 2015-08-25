@@ -4,27 +4,45 @@
 package utils
 
 import (
-	"strings"
-
+	"fmt"
 	"github.com/c4pt0r/cfg"
 	"github.com/wfxiang08/rpc_proxy/utils/log"
+	"strings"
 )
 
 type Config struct {
 	ProductName string
-	ZkAddr      string
+	Service     string
 
+	ZkAddr           string
 	ZkSessionTimeout int
-	Verbose          bool
 
-	Service   string
-	FrontHost string
-	FrontPort string
-	IpPrefix  string
-	BackAddr  string
+	FrontHost    string
+	FrontPort    string
+	FrontendAddr string
+	IpPrefix     string
+
+	BackAddr string
 
 	ProxyAddr string
 	Profile   bool
+	Verbose   bool
+}
+
+func (conf *Config) getFrontendAddr() string {
+	var frontendAddr = ""
+	// 如果没有指定FrontHost, 则自动根据 IpPrefix来进行筛选，
+	// 例如: IpPrefix: 10., 那么最终内网IP： 10.4.10.2之类的被选中
+	if conf.FrontHost == "" {
+		log.Println("FrontHost: ", conf.FrontHost, ", Prefix: ", conf.IpPrefix)
+		if conf.IpPrefix != "" {
+			conf.FrontHost = GetIpWithPrefix(conf.IpPrefix)
+		}
+	}
+	if conf.FrontPort != "" && conf.FrontHost != "" {
+		frontendAddr = fmt.Sprintf("tcp://%s:%s", conf.FrontHost, conf.FrontPort)
+	}
+	return frontendAddr
 }
 
 func LoadConf(configFile string) (*Config, error) {
@@ -67,6 +85,8 @@ func LoadConf(configFile string) (*Config, error) {
 
 	conf.FrontPort, _ = c.ReadString("front_port", "")
 	conf.FrontPort = strings.TrimSpace(conf.FrontPort)
+
+	conf.FrontendAddr = conf.getFrontendAddr()
 
 	conf.IpPrefix, _ = c.ReadString("ip_prefix", "")
 	conf.IpPrefix = strings.TrimSpace(conf.IpPrefix)

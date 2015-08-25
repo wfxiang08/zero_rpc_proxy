@@ -118,7 +118,7 @@ func (p *BackSockets) PurgeEndpoints() {
 		return
 	}
 
-	log.Printf(utils.Green("PurgeEndpoints %d vs. %d"), p.Active, len(p.Sockets))
+	log.Printf(utils.Green("PurgeEndpoints, active[%d] vs. total[%d]"), p.Active, len(p.Sockets))
 
 	p.Lock()
 	defer p.Unlock()
